@@ -24,7 +24,7 @@ phases:
       - pip3 install cfn-lint
       # - pip install --upgrade pip
       # - echo making the $PATH permanent
-      - source ~/.bashrc
+      # - source ~/.bashrc
       - echo validate cfn template 
       - cfn-lint test-pipeline.yaml
       - echo package the cfn template
