@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  pre_build:
+    commands:
+      - aws --version
+      - python3 --version  
+      - pip3 --version
+  build:
+    commands:
+      - echo Build started on `date`
+      - sudo apt-get update -y      
+      - sudo apt-get upgrade -y
+      # - echo installing aws cli  1.22.34
+      # - sudo apt-get install awscli -y
+      - echo installing pip3
+      - sudo apt-get install python3-pip -y
+      - echo modifying the $PATH
+      - echo 'export PATH="/home/ubuntu/.local/bin:$PATH"' >> ~/.bashrc
+      - echo installing cfn-lint
+      - pip3 install cfn-lint
+      # - pip install --upgrade pip
+      # - echo making the $PATH permanent
+      - source ~/.bashrc
+      - echo validate cfn template 
+      - cfn-lint test-pipeline.yaml
+      - echo package the cfn template
+      - aws cloudformation package --template-file test-pipeline.yaml --s3-bucket mynewestfirstbucket --output-template-file test-pipeline-artifacts.yaml
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - test-pipeline.yaml
+    - test-pipeline-artifacts.yaml
